@@ -1,9 +1,13 @@
+#!/bin/bash
+
 if [ "$#" -ne 5 ]; then
     echo "Illegal number of parameters"
-    echo "Usage: host_info.sh psql_host psql_port db_name psql_user 
+    echo "Usage: host_info.sh psql_host psql_port db_name psql_user \
 psql_password"
     exit;
 fi
+
+PGPASSWORD="$5"
 
 function get_hostname {
 hostname=$(hostname -f)
