@@ -1,3 +1,10 @@
+if [ "$#" -ne 5 ]; then
+    echo "Illegal number of parameters"
+    echo "Usage: host_info.sh psql_host psql_port db_name psql_user 
+psql_password"
+    exit;
+fi
+
 function get_hostname {
 hostname=$(hostname -f)
 }
@@ -19,18 +26,11 @@ function timestamp {
 
 get_hostname
 get_cpu_info
-echo $hostname
-echo $cpu_number
-echo $cpu_architecture
-echo $cpu_model
-echo $cpu_mhz
-echo ${l2_cache::-1}
-echo ${total_mem::-2}
 ts=$(timestamp)
 
 id_stmnt="SELECT id from host_info WHERE hostname = '${hostname}'"
 
-id=$(psql -h localhost -U postgres -d host_agent -t -c "$id_stmnt")
+id=$(psql -h "$1" -p "$2" -U "$4" -d "$3" -t -c "$id_stmnt")
 
 echo $id >./host_id.txt
 
@@ -39,4 +39,5 @@ cpu_architecture, cpu_model, cpu_mhz, l2_cache, \"timestamp\", total_mem)
 VALUES(${id}, '${hostname}', '${cpu_number}', '${cpu_architecture}', 
 '${cpu_model}', '${cpu_mhz}', '${l2_cache::-1}', '${ts}', '${total_mem::-2}');"
 
-psql -h localhost -U postgres -d host_agent -c "$insert_stmnt" 2>/dev/null
+psql -h "$1" -p "$2" -U "$4" -d "$3" -c "$insert_stmnt" 2>/dev/null
+
