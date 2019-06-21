@@ -17,7 +17,7 @@ cpu_model=$(echo "$specs" | egrep "^Model name:" |
     awk '{for (i=3; i<=NF; i++) print $i}')
 cpu_mhz=$(echo "$specs" | grep "CPU MHz:" | awk '{print $3}')
 l2_cache=$(echo "$specs" | grep "L2 cache:" | awk '{print $3}')
-total_mem=$(cat /proc/meminfo | grep "MemTotal:" | awk '{print $2 $3}')
+total_mem=$(cat /proc/meminfo | grep "MemTotal:" | awk '{print $2}')
 }
 
 function timestamp {
@@ -37,7 +37,7 @@ echo $id >./host_id.txt
 insert_stmnt="INSERT INTO host_info (id, hostname, cpu_number,
 cpu_architecture, cpu_model, cpu_mhz, l2_cache, \"timestamp\", total_mem)
 VALUES(${id}, '${hostname}', '${cpu_number}', '${cpu_architecture}', 
-'${cpu_model}', '${cpu_mhz}', '${l2_cache::-1}', '${ts}', '${total_mem::-2}');"
+'${cpu_model}', '${cpu_mhz}', '${l2_cache::-1}', '${ts}', '${total_mem}');"
 
 psql -h "$1" -p "$2" -U "$4" -d "$3" -c "$insert_stmnt" 2>/dev/null
 
