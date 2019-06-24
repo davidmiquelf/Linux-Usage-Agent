@@ -9,14 +9,10 @@ RETURNS TIMESTAMP WITHOUT TIME ZONE AS $$
       )
 $$ LANGUAGE SQL IMMUTABLE;
 
-SELECT id, total_mem, prcnt, "interval"
-FROM (
-     SELECT id, total_mem,
-     AVG(((total_mem/1000.0) - memory_free)*100 / (total_mem/1000)) as "prcnt",
-     round_minutes(u.timestamp, 5) as "interval"
-     FROM host_info i inner join host_usage u ON i.id = u.host_id
-     GROUP BY id, total_mem, "interval"
-     ) as sub1
-GROUP BY "interval", id, total_mem, "interval", prcnt
-ORDER BY "interval" DESC
+SELECT id, total_mem,
+AVG(((total_mem/1000.0) - memory_free)*100 / (total_mem/1000)) as "prcnt",
+round_minutes(u.timestamp, 5) as "interval"
+FROM host_info i inner join host_usage u ON i.id = u.host_id
+GROUP BY id, total_mem, "interval"
+ORDER BY "interval"
 ;
