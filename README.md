@@ -5,11 +5,16 @@ A PostgreSQL database that contains the basic info and usage data of each host w
 The hosts themselves have a bash script that is run periodically through crontab. The script gathers usage data to send to the
 database.
 ![Architecture Diagram](https://github.com/davidmiquelf/Linux-Usage-Agent/blob/master/Usage-Agent-Diagram.png)
+- The host_info table holds relatively static data such as total memory, cpu model, and hostname.
+- The host_usage table holds frequently changing data such as memory usage, disk io, cpu idle time, etc...
+- The script `host_info.sh` gathers static information of the host to populate the host_info table.
+It should be run once when setting up a new host.
+- The script  `host_usage.sh` gathers usage information of the host to populate the host_usage table. It should be run once per minute using crontab.
 
 ## Usage
 ### Database Setup
-Run Postgresql through docker and use the init file to set up the tables.
-Use `psql -h Localhost -U postgres` to access the database locally.
+- Run Postgresql through docker and use the init file to set up the tables.
+- Use `psql -h Localhost -U postgres` to access the database locally.
 
 ```
 CREATE DATABASE host_agent;
@@ -18,8 +23,10 @@ CREATE DATABASE host_agent;
 
 \i init.sql
 ```
-### `host_info.sh`
-This script gathers static information of the host to populate the host_info table.
-It should be run once when setting up a new host.
+- Run `host_info.sh` to add an entry in the host_info table for this host.
+- Run `crontab -e` to open a VI of the crontab file.
+- Write `* * * * * bash /home/centos/dev/jrvs/bootcamp/linux_sql/host_agent/scripts/host_usage.sh localhost 5432 host_agent postgres password > /tmp/host_usage.log` to the file, then save and quit.
 ## Improvements
-
+1. The initialization process could be fully automated: Program installs, running host_info.sh, updating the crontab, and creating the database can all be done in a single bash script.
+2. Periodically run host_info.sh to check for hardware changes.
+3. Add bash scripts the will execute sql queries and present the data in a meaningful way.
