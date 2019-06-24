@@ -32,16 +32,17 @@ get_hostname
 get_cpu_info
 ts=$(timestamp)
 
+
+
+insert_stmnt="INSERT INTO host_info (hostname, cpu_number,
+cpu_architecture, cpu_model, cpu_mhz, l2_cache, \"timestamp\", total_mem)
+VALUES('${hostname}', '${cpu_number}', '${cpu_architecture}', 
+'${cpu_model}', '${cpu_mhz}', '${l2_cache::-1}', '${ts}', '${total_mem}');"
+
+psql -h "$1" -p "$2" -U "$4" -d "$3" -c "$insert_stmnt" 2>/dev/null
+
 id_stmnt="SELECT id from host_info WHERE hostname = '${hostname}'"
 
 id=$(psql -h "$1" -p "$2" -U "$4" -d "$3" -t -c "$id_stmnt")
 
 echo $id >./host_id.txt
-
-insert_stmnt="INSERT INTO host_info (id, hostname, cpu_number,
-cpu_architecture, cpu_model, cpu_mhz, l2_cache, \"timestamp\", total_mem)
-VALUES(${id}, '${hostname}', '${cpu_number}', '${cpu_architecture}', 
-'${cpu_model}', '${cpu_mhz}', '${l2_cache::-1}', '${ts}', '${total_mem}');"
-
-psql -h "$1" -p "$2" -U "$4" -d "$3" -c "$insert_stmnt" 2>/dev/null
-
