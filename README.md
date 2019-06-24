@@ -12,7 +12,6 @@ It should be run once when setting up a new host.
 - The script  `host_usage.sh` gathers usage information of the host to populate the host_usage table. It should be run once per minute using crontab.
 
 ## Usage
-### Database Setup
 - Run Postgresql through docker and use the init file to set up the tables.
 - Use `psql -h Localhost -U postgres` to access the database locally.
 
