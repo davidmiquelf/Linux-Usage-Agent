@@ -5,33 +5,21 @@ A PostgreSQL database that contains the basic info and usage data of each host w
 The hosts themselves have a bash script that is run periodically through crontab. The script gathers usage data to send to the
 database.
 ![Architecture Diagram](https://github.com/davidmiquelf/Linux-Usage-Agent/blob/master/Usage-Agent-Diagram.png)
+
+## Usage
 ### Database Setup
 Run Postgresql through docker and use the init file to set up the tables.
+Use `psql -h Localhost -U postgres` to access the database locally.
+
 ```
-cd /home/<username>/dev/jrvs/bootcamp/host_agent/scripts
-
-su <username>
-
-systemctl status docker || systemctl start docker
-
-docker pull postgres
-
-export PGPASSWORD='password'
-
-docker run --rm --name jrvs-psql -e POSTGRES_PASSWORD=$PGPASSWORD -d -v 
-pgdata:/var/lib/postgresql/data -p 5432:5432 postgres
-
-sudo yum install -y postgresql
-
-psql -h Localhost -U postgres
-
 CREATE DATABASE host_agent;
 
 \c host_agent
 
 \i init.sql
 ```
-## Usage
-
+### `host_info.sh`
+This script gathers static information of the host to populate the host_info table.
+It should be run once when setting up a new host.
 ## Improvements
 
