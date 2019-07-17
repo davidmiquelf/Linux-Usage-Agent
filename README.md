@@ -12,8 +12,8 @@ It should be run once when setting up a new host.
 - The script  `host_usage.sh` gathers usage information of the host to populate the host_usage table. It should be run once per minute using crontab.
 
 ## Usage
-- Run Postgresql through docker and use the init file to set up the tables.
-- Use `psql -h Localhost -U postgres` to access the database locally.
+- Run Postgresql through docker and use the init file to set up the tables, use any viable host, port, username, and password.
+- Use `psql -h [host] -U [username]` to access the database locally.
 
 ```
 CREATE DATABASE host_agent;
@@ -22,9 +22,9 @@ CREATE DATABASE host_agent;
 
 \i init.sql
 ```
-- Run `host_info.sh localhost 5432 host_agent postgres password` to add an entry in the host_info table for this host.
+- Run `host_info.sh [host] host_agent [user] [password]` to add an entry in the host_info table for this host.
 - Run `crontab -e` to open a VI of the crontab file.
-- Write `* * * * * bash /home/centos/dev/jrvs/bootcamp/linux_sql/host_agent/scripts/host_usage.sh localhost 5432 host_agent postgres password > /tmp/host_usage.log` to the file, then save and quit.
+- Write `* * * * * bash /home/centos/dev/jrvs/bootcamp/linux_sql/host_agent/scripts/host_usage.sh [host] [port] host_agent [username] [password] > /tmp/host_usage.log` to the file, then save and quit.
 ## Improvements
 1. The initialization process could be fully automated: Program installs, running host_info.sh, updating the crontab, and creating the database can all be done in a single bash script.
 2. Periodically run host_info.sh to check for hardware changes.
