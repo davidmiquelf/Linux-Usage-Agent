@@ -22,7 +22,7 @@ CREATE DATABASE host_agent;
 
 \i init.sql
 ```
-- Run `host_info.sh` to add an entry in the host_info table for this host.
+- Run `host_info.sh localhost 5432 host_agent postgres password` to add an entry in the host_info table for this host.
 - Run `crontab -e` to open a VI of the crontab file.
 - Write `* * * * * bash /home/centos/dev/jrvs/bootcamp/linux_sql/host_agent/scripts/host_usage.sh localhost 5432 host_agent postgres password > /tmp/host_usage.log` to the file, then save and quit.
 ## Improvements
