@@ -7,14 +7,18 @@ psql_password"
     exit;
 fi
 
-PGPASSWORD="$5"
+HOST="$1"
+PORT="$2"
+PSQLUSER="$4"
+DATABASE="$3"
+export PGPASSWORD="$5"
 
 function get_host_info {
     hostname=$(hostname -f)
     host_id=$(cat /home/centos/dev/jrvs/bootcamp/host_agent/scripts/host_id.txt)
     if [ -z "$host_id" ]; then
 	id_stmnt="SELECT id from host_info WHERE hostname = '${hostname}'"
-	host_id=$(psql -h "$1" -p "$2" -U "$4" -d "$3" -t -c "$id_stmnt")
+	host_id=$(psql -h "$HOST" -p "$PORT" -U "$PSQLUSER" -d "$DATABASE" -t -c "$id_stmnt")
     fi
 }
 
@@ -39,4 +43,4 @@ insert_string="INSERT INTO host_usage(\"timestamp\", host_id, memory_free, cpu_i
 cpu_kernel, disk_io, disk_available) VALUES('${timestamp}', '${host_id}', '${memory_free}', 
 '${cpu_idle}', '${cpu_kernel}', '${disk_io}', '${disk_available::-1}')"
 
-psql -h "$1" -p "$2" -U "$4" -d "$3" -c "$insert_string"
+psql -h "$HOST" -p "$PORT" -U "$PSQLUSER" -d "$DATABASE" -c "$insert_string"
