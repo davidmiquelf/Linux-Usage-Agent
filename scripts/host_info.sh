@@ -7,6 +7,10 @@ psql_password"
     exit;
 fi
 
+HOST="$1"
+PORT="$2"
+DATABASE="$3"
+PSQLUSER="$4"
 PGPASSWORD="$5"
 
 function get_hostname {
@@ -39,10 +43,10 @@ cpu_architecture, cpu_model, cpu_mhz, l2_cache, \"timestamp\", total_mem)
 VALUES('${hostname}', '${cpu_number}', '${cpu_architecture}', 
 '${cpu_model}', '${cpu_mhz}', '${l2_cache::-1}', '${ts}', '${total_mem}');"
 
-psql -h "$1" -p "$2" -U "$4" -d "$3" -c "$insert_stmnt" 2>/dev/null
+psql -h "$HOST" -p "$PORT" -U "$PSQLUSER" -d "$DATABASE" -c "$insert_stmnt" 2>/dev/null
 
 id_stmnt="SELECT id from host_info WHERE hostname = '${hostname}'"
 
-id=$(psql -h "$1" -p "$2" -U "$4" -d "$3" -t -c "$id_stmnt")
+id=$(psql -h "$HOST" -p "$PORT" -U "$PSQLUSER" -d "$DATABASE" -t -c "$id_stmnt")
 
 echo $id >./host_id.txt
